@@ -17,9 +17,9 @@ model:
     conditioning_key: crossattn
     monitor: val/loss_simple_ema
     scale_factor: 0.18215
-    use_ema: False
+    use_ema: True
     # for training only
-    # ckpt_path: /mnt/lustre/jywang/code/stable_diffmodels/v2-1_512-ema-pruned.ckpt
+    ckpt_path: /kaggle/input/stable-sr-ema/v2-1_512-ema-pruned.ckpt
     unfrozen_diff: False
     random_size: False
     time_replace: 1000
@@ -52,7 +52,7 @@ model:
       target: ldm.models.autoencoder.AutoencoderKL
       params:
         # for training only
-        # ckpt_path: /mnt/lustre/jywang/code/stable_diffmodels/v2-1_512-ema-pruned.ckpt
+        ckpt_path: /kaggle/input/stable-sr-ema/v2-1_512-ema-pruned.ckpt
         embed_dim: 4
         monitor: val/rec_loss
         ddconfig:
@@ -128,16 +128,16 @@ degradation:
 data:
   target: main.DataModuleFromConfig
   params:
-    batch_size: 6
+    batch_size: 2
     num_workers: 6
     wrap: false
     train:
       target: basicsr.data.realesrgan_dataset.RealESRGANDataset
       params:
         queue_size: 180
-        gt_path: ['/mnt/lustre/share/jywang/dataset/DIV8K/train_HR/', '/mnt/lustre/share/jywang/dataset/df2k_ost/GT/']
-        face_gt_path: '/mnt/lustre/share/jywang/dataset/FFHQ/1024/'
-        num_face: 10000
+        gt_path: '/kaggle/input/stablesr-data4/GT/Train4/'
+        #face_gt_path: '/mnt/lustre/share/jywang/dataset/FFHQ/1024/'
+        #num_face: 10000
         crop_size: 512
         io_backend:
           type: disk
@@ -166,7 +166,7 @@ data:
     validation:
       target: basicsr.data.realesrgan_dataset.RealESRGANDataset
       params:
-        gt_path: /mnt/lustre/share/jywang/dataset/ImageSR/DIV2K/DIV2K_train_HR/
+        gt_path: /kaggle/input/stablesr-data4/GT/Validation4/
         crop_size: 512
         io_backend:
           type: disk
@@ -202,7 +202,7 @@ test_data:
     test:
       target: basicsr.data.realesrgan_dataset.RealESRGANDataset
       params:
-        gt_path: /mnt/lustre/share/jywang/dataset/ImageSR/DIV2K/DIV2K_train_HR/
+        gt_path: /kaggle/input/stablesr-data4/GT/Validation4/
         crop_size: 512
         io_backend:
           type: disk
@@ -243,5 +243,5 @@ lightning:
 
   trainer:
     benchmark: True
-    max_steps: 800000
+    max_steps: 40000
     accumulate_grad_batches: 4
